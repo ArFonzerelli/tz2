@@ -1,33 +1,34 @@
 package dao.impls;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import dao.UserDao;
 import domain.User;
 
 public class InMemoryUserDao implements UserDao {
 
-    private List<User> users = Collections.synchronizedList(new LinkedList<User>());
+    private Map<String, User> users = new ConcurrentHashMap<>();
 
     @Override
     public boolean userExists(User user) {
-        return users.contains(user);
+        return users.containsKey(user.getLogin());
     }
 
     @Override
     public int checkAuth(User user) {
-        for (User userInList : users){
+        User userInMap = users.get(user.getLogin());
 
-            String userLogin = user.getLogin();
-            String userPassword = user.getPassword();
+        if (userInMap == null)
+            return 1;
 
-            if (userInList.getLogin().equals(userLogin) && userInList.getPassword().equals(userPassword))
-                return 0;
-            if (userInList.getLogin().equals(user.getLogin()) && !userInList.getPassword().equals(userPassword))
-                return 2;
-        }
+        if (userInMap.equals(user))
+            return 0;
 
-        return 1;
+        if (!userInMap.getPassword().equals(user.getPassword()))
+            return 2;
+
+        return 3;
     }
 
     @Override
@@ -35,6 +36,8 @@ public class InMemoryUserDao implements UserDao {
         if (userExists(user))
             return false;
 
-        return users.add(user);
+        users.put(user.getLogin(), user);
+
+        return true;
     }
 }
