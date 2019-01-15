@@ -4,7 +4,7 @@
 <html lang="ru" >
 
 <body>
-    <h2>Рест-контроллер доступен по адресу <%= request.getRequestURI() %> </h2>
+    <h2>Рест-контроллер доступен по адресу <%= request.getRequestURL() %>rest</h2>
 </body>
 
 </html>

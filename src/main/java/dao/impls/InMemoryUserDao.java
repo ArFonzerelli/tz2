@@ -20,13 +20,18 @@ public class InMemoryUserDao implements UserDao {
         if (!userExists(user))
             return 1;
 
-        User userInMap = users.get(user.getLogin());
+        try {
+            User userInMap = users.get(user.getLogin());
 
-        if (userInMap.equals(user))
-            return 0;
+            if (userInMap.equals(user))
+                return 0;
 
-        if (!userInMap.getPassword().equals(user.getPassword()))
-            return 2;
+            if (!userInMap.getPassword().equals(user.getPassword()))
+                return 2;
+        }
+        catch (Exception e){
+            return 3;
+        }
 
         return 3;
     }
