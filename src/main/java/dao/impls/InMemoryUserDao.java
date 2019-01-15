@@ -17,10 +17,10 @@ public class InMemoryUserDao implements UserDao {
 
     @Override
     public int checkAuth(User user) {
-        User userInMap = users.get(user.getLogin());
-
-        if (userInMap == null)
+        if (!userExists(user))
             return 1;
+
+        User userInMap = users.get(user.getLogin());
 
         if (userInMap.equals(user))
             return 0;
